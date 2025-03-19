@@ -2,8 +2,8 @@ import { useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 const priorityColors = {
-  P1: "#D32F2F",
-  P2: "#1ABC9C",
+  P1: "#FF0000",
+  P2: "#FFA500",
   P3: "#F8C8DC",
   P4: "#D3D3D3",
 };
@@ -11,6 +11,9 @@ const priorityColors = {
 const TaskInput = ({ setData }) => {
   const [showPriorities, setShowPriorities] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState(null);
+
+  const [titleCounter, setTitleCounter] = useState("");
+  const [descriptionCounter, setDescriptionCounter] = useState("");
 
   const title = useRef();
   const description = useRef();
@@ -36,7 +39,7 @@ const TaskInput = ({ setData }) => {
       };
       setData((prevData) => [...prevData, newTask]);
 
-      const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      const storedTasks = JSON.parse(localStorage.getItem("tasks"));
 
       storedTasks.push(newTask);
 
@@ -53,17 +56,53 @@ const TaskInput = ({ setData }) => {
         {/* Title Input */}
         <input
           type="text"
+          maxLength="123"
           ref={title}
+          value={titleCounter}
+          onChange={(e) => setTitleCounter(e.target.value)}
           placeholder="Got a task? Let's schedule it!"
-          className="outline-none mr-2 w-60 p-2 rounded mb-2 placeholder:font-medium placeholder:text-gray-400"
+          className="outline-none mr-2 w-full p-2 rounded mb-2 placeholder:font-medium placeholder:text-gray-400"
         />
+        <p className="text-sm justify-end flex">
+          Title Word Count:
+          <span
+            style={{
+              color:
+                titleCounter.length > 110
+                  ? "#FF0000"
+                  : titleCounter.length >= 80
+                  ? "#FFA500"
+                  : "#000000",
+            }}
+          >
+            {123 - titleCounter.length}
+          </span>
+        </p>
         {/* Description Input */}
         <input
           type="text"
           ref={description}
+          value={descriptionCounter}
           placeholder="Description"
-          className="outline-none mr-2 w-60 p-2 rounded mb-2 placeholder:text-sm"
+          maxLength="150"
+          onChange={(e) => setDescriptionCounter(e.target.value)}
+          className="outline-none mr-2 w-full p-2 rounded mb-2 placeholder:text-sm "
         />
+        <p className="text-sm justify-end flex">
+          Description Word Count:
+          <span
+            style={{
+              color:
+                descriptionCounter.length > 110
+                  ? "#FF0000"
+                  : descriptionCounter.length >= 80
+                  ? "#FFA500"
+                  : "#000000",
+            }}
+          >
+            {150 - descriptionCounter.length}
+          </span>
+        </p>
         <div className="flex flex-row border-b p-2">
           {/* Date Input */}
           <input
@@ -79,7 +118,9 @@ const TaskInput = ({ setData }) => {
           >
             Priority
           </button>
-          <button>{selectedPriority}</button>
+          <button style={{ color: priorityColors[selectedPriority] }}>
+            {selectedPriority}
+          </button>
         </div>
 
         {/* Priority Buttons */}
