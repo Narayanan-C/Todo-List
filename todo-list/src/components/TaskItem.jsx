@@ -1,8 +1,8 @@
 const TaskItem = ({ item, setData, data }) => {
-  console.log(item);
   const handleDeleteItem = (delete_id) => {
     const updatedData = data.filter((data) => data.id !== delete_id);
     setData(updatedData);
+    localStorage.setItem("tasks", JSON.stringify(updatedData));
   };
 
   const handleCompletedItem = (completed_id) => {
@@ -15,7 +15,9 @@ const TaskItem = ({ item, setData, data }) => {
         : task
     );
     setData(updatedData);
+    localStorage.setItem("tasks", JSON.stringify(updatedData));
   };
+
   return (
     <div
       className={`border-b border-gray-400 w-[600px] m-3 p-2 rounded-lg bg-[#FAF3E0] shadow-2xl ${

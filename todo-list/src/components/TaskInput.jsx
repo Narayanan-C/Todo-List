@@ -35,6 +35,12 @@ const TaskInput = ({ setData }) => {
         status: "On going",
       };
       setData((prevData) => [...prevData, newTask]);
+
+      const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+      storedTasks.push(newTask);
+
+      localStorage.setItem("tasks", JSON.stringify(storedTasks));
     } else {
       alert("please provide an task");
     }

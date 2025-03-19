@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 //Components
 import Header from "./components/Header";
@@ -8,6 +8,12 @@ import TaskList from "./components/TaskList";
 
 function App() {
   const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    setData(storedTasks);
+  }, []);
+
   return (
     <div>
       <Header />

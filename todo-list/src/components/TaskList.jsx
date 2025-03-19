@@ -2,8 +2,10 @@ import { useState } from "react";
 import TaskItem from "./TaskItem";
 
 const TaskList = ({ data, setData }) => {
-  const [sortDropMenu, setSortDropMenu] = useState(false);
+  const [sortDropMenu, setSortDropMenu] = useState(false); // sort drop down toggle function
+
   const [sortToggle, setSortToggle] = useState({
+    // sort button toggle function
     filteredToggle: false,
     prioritySortToggle: false,
   });
