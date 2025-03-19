@@ -45,6 +45,9 @@ const TaskItem = ({ item, setData, data }) => {
         >
           Completed
         </button>
+        <button className="border w-18 mr-2 text-center rounded bg-[#FFB6B9] font-bold text-white p-1 hover:bg-[#FF7D85] hover:scale-110 transition ease-out">
+          Edit
+        </button>
       </div>
     </div>
   );

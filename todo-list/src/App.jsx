@@ -10,7 +10,7 @@ function App() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    const storedTasks = JSON.parse(localStorage.getItem("tasks"));
     setData(storedTasks);
   }, []);
 
