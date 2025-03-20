@@ -39,7 +39,7 @@ const TaskInput = ({ setData }) => {
       };
       setData((prevData) => [...prevData, newTask]);
 
-      const storedTasks = JSON.parse(localStorage.getItem("tasks"));
+      const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
       storedTasks.push(newTask);
 
