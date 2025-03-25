@@ -9,7 +9,6 @@ const priorityColors = {
 };
 
 const TaskInput = ({ setData, dataFromChild, data }) => {
-  console.log(dataFromChild);
   const [showPriorities, setShowPriorities] = useState(false);
   const [inputTitle, setInputTitle] = useState("");
   const [inputDescription, setInputDescription] = useState("");

@@ -27,6 +27,7 @@ function App() {
         data={data}
         setData={setData}
         getDataFromChild={getDataFromChild}
+        toggleVisibility={dataFromChild?.isEdit}
       />
     </div>
   );
