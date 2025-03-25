@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 
-const priorityColors = {
-  P1: "#FF0000",
-  P2: "#FFA500",
-  P3: "#F8C8DC",
-  P4: "#D3D3D3",
-};
+import priorityColors from "../utils/contants";
+import SubmitButton from "../utils/SubmitButton";
+import ConfirmButton from "../utils/ConfirmButton";
 
 const TaskInput = ({ setData, dataFromChild, data }) => {
   const [showPriorities, setShowPriorities] = useState(false);
@@ -18,7 +14,7 @@ const TaskInput = ({ setData, dataFromChild, data }) => {
   useEffect(() => {
     if (dataFromChild?.isEdit) {
       const chosenCard = data.find((item) => item.id === dataFromChild.id);
-      console.log(chosenCard);
+
       if (chosenCard) {
         setInputTitle(chosenCard?.title);
         setInputDescription(chosenCard?.description);
@@ -35,60 +31,33 @@ const TaskInput = ({ setData, dataFromChild, data }) => {
     setShowPriorities(false);
   };
 
-  const handleSubmitButton = () => {
-    if (inputTitle.trim() || inputDescription.trim() !== "") {
-      const newTask = {
-        id: uuidv4(),
-        title: inputTitle,
-        description: inputDescription,
-        priority: {
-          name: selectedPriority,
-          colorCode: priorityColors[selectedPriority],
-        },
-        dueDate: inputDate,
-        status: "On going",
-      };
+  const handleSubmitButton = () =>
+    SubmitButton(
+      inputTitle,
+      inputDescription,
+      selectedPriority,
+      priorityColors,
+      inputDate,
+      setData
+    );
 
-      setData((prevData) => [...prevData, newTask]);
-
-      const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-      storedTasks.push(newTask);
-      localStorage.setItem("tasks", JSON.stringify(storedTasks));
-    } else {
-      alert("please provide an task");
-    }
-  };
   const handleConfirmButton = () => {
-    const indexOfData = data.findIndex((item) => item.id === dataFromChild?.id);
-
-    const updatedData = [...data];
-
-    updatedData[indexOfData] = {
-      id: dataFromChild.id,
-      title: inputTitle,
-      description: inputDescription,
-      priority: {
-        name: selectedPriority,
-        colorCode: priorityColors[selectedPriority],
-      },
-      dueDate: inputDate,
-      status: "On going",
-    };
-
-    setData(updatedData);
-    dataFromChild?.setIsEdit(false);
-    dataFromChild.id = null;
-    dataFromChild.isEdit = null;
-
-    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    storedTasks[indexOfData] = updatedData[indexOfData];
-    localStorage.setItem("tasks", JSON.stringify(storedTasks));
-
+    ConfirmButton(
+      data,
+      dataFromChild,
+      inputTitle,
+      inputDescription,
+      selectedPriority,
+      priorityColors,
+      inputDate,
+      setData
+    );
     setInputTitle("");
     setInputDescription("");
     setInputDate("");
     setSelectedPriority(null);
   };
+
   return (
     <div className="flex justify-center mt-4 ">
       <div className="border p-5 flex flex-col w-[600px] rounded-lg border-gray-400 bg-[#FDF7F3]">
@@ -156,7 +125,7 @@ const TaskInput = ({ setData, dataFromChild, data }) => {
           {!dataFromChild.isEdit ? (
             <>
               <button
-                onClick={handleSubmitButton}
+                onClick={() => handleSubmitButton}
                 className="border w-16 h-10 p-1 text-center rounded-lg border-gray-300 mt-5 bg-red-400 hover:bg-red-500 text-white font-bold hover:scale-90 transition ease-out"
               >
                 Add

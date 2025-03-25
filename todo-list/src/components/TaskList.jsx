@@ -2,7 +2,6 @@ import { useState } from "react";
 import TaskItem from "./TaskItem";
 
 const TaskList = ({ data, setData, getDataFromChild, toggleVisibility }) => {
-  console.log(toggleVisibility);
   const [sortDropMenu, setSortDropMenu] = useState(false); // sort drop down toggle function
 
   const [sortToggle, setSortToggle] = useState({
