@@ -8,6 +8,11 @@ import TaskList from "./components/TaskList";
 
 function App() {
   const [data, setData] = useState([]);
+  const [dataFromChild, setDataFromChild] = useState("");
+
+  function getDataFromChild(dataId, isEditOn, setIsEdit) {
+    setDataFromChild({ id: dataId, isEdit: isEditOn, setIsEdit: setIsEdit });
+  }
 
   useEffect(() => {
     const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -17,8 +22,12 @@ function App() {
   return (
     <div>
       <Header />
-      <TaskInput setData={setData} data={data} />
-      <TaskList data={data} setData={setData} />
+      <TaskInput setData={setData} data={data} dataFromChild={dataFromChild} />
+      <TaskList
+        data={data}
+        setData={setData}
+        getDataFromChild={getDataFromChild}
+      />
     </div>
   );
 }

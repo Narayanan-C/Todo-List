@@ -1,7 +1,7 @@
 import { useState } from "react";
 import TaskItem from "./TaskItem";
 
-const TaskList = ({ data, setData }) => {
+const TaskList = ({ data, setData, getDataFromChild }) => {
   const [sortDropMenu, setSortDropMenu] = useState(false); // sort drop down toggle function
 
   const [sortToggle, setSortToggle] = useState({
@@ -83,12 +83,16 @@ const TaskList = ({ data, setData }) => {
 
       <div className="flex flex-col justify-center">
         {dataToRender.map((f_item) => (
-          <TaskItem
-            item={f_item}
-            key={f_item.id}
-            setData={setData}
-            data={data}
-          />
+          <>
+            {console.log(f_item)}
+            <TaskItem
+              item={f_item}
+              key={f_item.id}
+              setData={setData}
+              data={data}
+              getDataFromChild={getDataFromChild}
+            />
+          </>
         ))}
       </div>
     </div>

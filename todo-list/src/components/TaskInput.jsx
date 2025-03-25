@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 const priorityColors = {
@@ -8,16 +8,28 @@ const priorityColors = {
   P4: "#D3D3D3",
 };
 
-const TaskInput = ({ setData }) => {
+const TaskInput = ({ setData, dataFromChild, data }) => {
+  console.log(dataFromChild);
   const [showPriorities, setShowPriorities] = useState(false);
+  const [inputTitle, setInputTitle] = useState("");
+  const [inputDescription, setInputDescription] = useState("");
+  const [inputDate, setInputDate] = useState("");
   const [selectedPriority, setSelectedPriority] = useState(null);
 
-  const [titleCounter, setTitleCounter] = useState("");
-  const [descriptionCounter, setDescriptionCounter] = useState("");
+  useEffect(() => {
+    if (dataFromChild?.isEdit) {
+      const chosenCard = data.find((item) => item.id === dataFromChild.id);
+      console.log(chosenCard);
+      if (chosenCard) {
+        setInputTitle(chosenCard?.title);
+        setInputDescription(chosenCard?.description);
+        setInputDate(chosenCard?.dueDate);
+        setSelectedPriority(chosenCard?.priority?.name);
+      }
+    }
+  }, [dataFromChild, data]);
 
-  const title = useRef();
-  const description = useRef();
-  const dueDate = useRef();
+  const priorities = ["P1", "P2", "P3", "P4"];
 
   const handlePriority = (priority) => {
     setSelectedPriority(priority);
@@ -25,31 +37,59 @@ const TaskInput = ({ setData }) => {
   };
 
   const handleSubmitButton = () => {
-    if (title.current.value.trim() || description.current.value.trim() !== "") {
+    if (inputTitle.trim() || inputDescription.trim() !== "") {
       const newTask = {
         id: uuidv4(),
-        title: title.current.value,
-        description: description.current.value,
+        title: inputTitle,
+        description: inputDescription,
         priority: {
           name: selectedPriority,
           colorCode: priorityColors[selectedPriority],
         },
-        dueDate: dueDate.current.value,
+        dueDate: inputDate,
         status: "On going",
       };
+
       setData((prevData) => [...prevData, newTask]);
 
       const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
       storedTasks.push(newTask);
-
       localStorage.setItem("tasks", JSON.stringify(storedTasks));
     } else {
       alert("please provide an task");
     }
   };
+  const handleConfirmButton = () => {
+    const indexOfData = data.findIndex((item) => item.id === dataFromChild?.id);
 
-  const priorities = ["P1", "P2", "P3", "P4"];
+    const updatedData = [...data];
+
+    updatedData[indexOfData] = {
+      id: dataFromChild.id,
+      title: inputTitle,
+      description: inputDescription,
+      priority: {
+        name: selectedPriority,
+        colorCode: priorityColors[selectedPriority],
+      },
+      dueDate: inputDate,
+      status: "On going",
+    };
+
+    setData(updatedData);
+    dataFromChild?.setIsEdit(false);
+    dataFromChild.id = null;
+    dataFromChild.isEdit = null;
+
+    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    storedTasks[indexOfData] = updatedData[indexOfData];
+    localStorage.setItem("tasks", JSON.stringify(storedTasks));
+
+    setInputTitle("");
+    setInputDescription("");
+    setInputDate("");
+    setSelectedPriority(null);
+  };
   return (
     <div className="flex justify-center mt-4 ">
       <div className="border p-5 flex flex-col w-[600px] rounded-lg border-gray-400 bg-[#FDF7F3]">
@@ -57,57 +97,28 @@ const TaskInput = ({ setData }) => {
         <input
           type="text"
           maxLength="123"
-          ref={title}
-          value={titleCounter}
-          onChange={(e) => setTitleCounter(e.target.value)}
+          value={inputTitle}
+          onChange={(e) => setInputTitle(e.target.value)}
           placeholder="Got a task? Let's schedule it!"
           className="outline-none mr-2 w-full p-2 rounded mb-2 placeholder:font-medium placeholder:text-gray-400"
         />
-        <p className="text-sm justify-end flex">
-          Title Word Count:
-          <span
-            style={{
-              color:
-                titleCounter.length > 110
-                  ? "#FF0000"
-                  : titleCounter.length >= 80
-                  ? "#FFA500"
-                  : "#000000",
-            }}
-          >
-            {123 - titleCounter.length}
-          </span>
-        </p>
+
         {/* Description Input */}
         <input
           type="text"
-          ref={description}
-          value={descriptionCounter}
+          value={inputDescription}
           placeholder="Description"
           maxLength="150"
-          onChange={(e) => setDescriptionCounter(e.target.value)}
+          onChange={(e) => setInputDescription(e.target.value)}
           className="outline-none mr-2 w-full p-2 rounded mb-2 placeholder:text-sm "
         />
-        <p className="text-sm justify-end flex">
-          Description Word Count:
-          <span
-            style={{
-              color:
-                descriptionCounter.length > 110
-                  ? "#FF0000"
-                  : descriptionCounter.length >= 80
-                  ? "#FFA500"
-                  : "#000000",
-            }}
-          >
-            {150 - descriptionCounter.length}
-          </span>
-        </p>
+
         <div className="flex flex-row border-b p-2">
           {/* Date Input */}
           <input
             type="date"
-            ref={dueDate}
+            value={inputDate}
+            onChange={(e) => setInputDate(e.target.value)}
             className="border p-1 border-gray-300  text-center rounded-lg mr-3 text-gray-500"
           />
 
@@ -132,7 +143,7 @@ const TaskInput = ({ setData }) => {
           >
             {priorities.map((priority, i) => (
               <button
-                key={uuidv4()}
+                key={priority}
                 onClick={() => handlePriority(priority)}
                 className="border w-22 rounded hover:scale-110 transition ease-out border-gray-400 bg-[#e8e9d9] hover:bg-[#e0c1be] hover:text-white"
               >
@@ -143,12 +154,25 @@ const TaskInput = ({ setData }) => {
         )}
         {/* Submit Button */}
         <div className="flex justify-end">
-          <button
-            onClick={handleSubmitButton}
-            className="border w-16 h-10 p-1 text-center rounded-lg border-gray-300 mt-5 bg-red-400 hover:bg-red-500 text-white font-bold hover:scale-90 transition ease-out"
-          >
-            Add
-          </button>
+          {!dataFromChild.isEdit ? (
+            <>
+              <button
+                onClick={handleSubmitButton}
+                className="border w-16 h-10 p-1 text-center rounded-lg border-gray-300 mt-5 bg-red-400 hover:bg-red-500 text-white font-bold hover:scale-90 transition ease-out"
+              >
+                Add
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={handleConfirmButton}
+                className="border w-20 h-10 p-1 text-center rounded-lg border-gray-300 mt-5 bg-red-400 hover:bg-red-500 text-white font-bold hover:scale-90 transition ease-out"
+              >
+                Confirm
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

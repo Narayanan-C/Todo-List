@@ -1,4 +1,7 @@
-const TaskItem = ({ item, setData, data }) => {
+import { useState } from "react";
+
+const TaskItem = ({ item, setData, data, getDataFromChild }) => {
+  const [isEdit, setIsEdit] = useState(true);
   const handleDeleteItem = (delete_id) => {
     const updatedData = data.filter((data) => data.id !== delete_id);
     setData(updatedData);
@@ -18,6 +21,9 @@ const TaskItem = ({ item, setData, data }) => {
     localStorage.setItem("tasks", JSON.stringify(updatedData));
   };
 
+  const handleDataTransport = () => {
+    getDataFromChild(item.id, isEdit, setIsEdit);
+  };
   return (
     <div
       className={`border-b border-gray-400 w-[600px] m-3 p-2 rounded-lg bg-[#FAF3E0] shadow-2xl ${
@@ -45,7 +51,10 @@ const TaskItem = ({ item, setData, data }) => {
         >
           Completed
         </button>
-        <button className="border w-18 mr-2 text-center rounded bg-[#FFB6B9] font-bold text-white p-1 hover:bg-[#FF7D85] hover:scale-110 transition ease-out">
+        <button
+          onClick={handleDataTransport}
+          className="border w-16 mr-2 text-center rounded bg-[#FFB6B9] font-bold text-white p-1 hover:bg-[#FF7D85] hover:scale-110 transition ease-out"
+        >
           Edit
         </button>
       </div>
