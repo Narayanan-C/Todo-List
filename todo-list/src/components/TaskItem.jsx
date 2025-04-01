@@ -34,7 +34,7 @@ const TaskItem = ({ item, setData, data, getDataFromChild }) => {
         <b style={{ color: item.priority.colorCode }}>[{item.priority.name}]</b>
         {item.title}
       </h1>
-      <p>{item.description}</p>
+      <p className="text-sm font-bold text-gray-500">{item.description}</p>
       <p>
         <b className="text-[#FF6F61]">Due Date:</b> {item.dueDate}
       </p>

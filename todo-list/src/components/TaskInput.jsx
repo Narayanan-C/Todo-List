@@ -10,6 +10,7 @@ const TaskInput = ({ setData, dataFromChild, data }) => {
   const [inputDescription, setInputDescription] = useState("");
   const [inputDate, setInputDate] = useState("");
   const [selectedPriority, setSelectedPriority] = useState(null);
+  const [minDate, setMinDate] = useState(null);
 
   useEffect(() => {
     if (dataFromChild?.isEdit) {
@@ -23,6 +24,11 @@ const TaskInput = ({ setData, dataFromChild, data }) => {
       }
     }
   }, [dataFromChild, data]);
+
+  useEffect(() => {
+    const currentDate = new Date().toISOString().split("T")[0];
+    setMinDate(currentDate);
+  }, []);
 
   const priorities = ["P1", "P2", "P3", "P4"];
 
@@ -38,7 +44,11 @@ const TaskInput = ({ setData, dataFromChild, data }) => {
       selectedPriority,
       priorityColors,
       inputDate,
-      setData
+      setData,
+      setInputTitle,
+      setInputDescription,
+      setInputDate,
+      setSelectedPriority
     );
 
   const handleConfirmButton = () => {
@@ -78,7 +88,7 @@ const TaskInput = ({ setData, dataFromChild, data }) => {
           placeholder="Description"
           maxLength="150"
           onChange={(e) => setInputDescription(e.target.value)}
-          className="outline-none mr-2 w-full p-2 rounded mb-2 placeholder:text-sm "
+          className="outline-none mr-2 w-full p-2 rounded mb-2 text-sm font-bold text-gray-500 "
         />
 
         <div className="flex flex-row border-b p-2">
@@ -87,6 +97,7 @@ const TaskInput = ({ setData, dataFromChild, data }) => {
             type="date"
             value={inputDate}
             onChange={(e) => setInputDate(e.target.value)}
+            min={minDate}
             className="border p-1 border-gray-300  text-center rounded-lg mr-3 text-gray-500"
           />
 

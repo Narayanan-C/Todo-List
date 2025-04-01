@@ -6,7 +6,11 @@ const SubmitButton = (
   selectedPriority,
   priorityColors,
   inputDate,
-  setData
+  setData,
+  setInputTitle,
+  setInputDescription,
+  setInputDate,
+  setSelectedPriority
 ) => {
   if (inputTitle.trim() || inputDescription.trim() !== "") {
     const newTask = {
@@ -26,6 +30,11 @@ const SubmitButton = (
     const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
     storedTasks.push(newTask);
     localStorage.setItem("tasks", JSON.stringify(storedTasks));
+
+    setInputTitle("");
+    setInputDescription("");
+    setInputDate("");
+    setSelectedPriority(null);
   } else {
     alert("please provide an task");
   }
