@@ -125,7 +125,7 @@ const TaskInput = ({ setData, dataFromChild, data }) => {
           {!dataFromChild.isEdit ? (
             <>
               <button
-                onClick={() => handleSubmitButton}
+                onClick={handleSubmitButton}
                 className="border w-16 h-10 p-1 text-center rounded-lg border-gray-300 mt-5 bg-red-400 hover:bg-red-500 text-white font-bold hover:scale-90 transition ease-out"
               >
                 Add
